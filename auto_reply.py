@@ -9,7 +9,7 @@ api_hash = "53b2a875f92fa666abb1493b9ccc8eab"  # Замените на ваш AP
 WORK_HOURS = {
     'start': (11, 0),  # Начало работы: 11:00
     'end': (19, 0),  # Конец работы: 19:00
-    'work_days': range(0, 5),  # Рабочие дни: ПН=0, ..., ПТ=4
+    'work_days': range(0, 7),  # Рабочие дни: ПН=0, ..., ПТ=4
 }
 
 HOLIDAY_DATES = [
