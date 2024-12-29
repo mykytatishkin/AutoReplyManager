@@ -51,13 +51,26 @@ async def auto_reply(client, message):
 @app.on_message(filters.chat(SYSTEM_CHAT_ID) & filters.text)
 async def handle_system_chat_message(client, message):
     """Обработчик сообщений из системного чата."""
+    print(f"Системное сообщение: {message.text}")
     # Извлечение кода из текста системного сообщения
     match = re.search(r"\b\d{4,8}\b", message.text)
     if match:
         code = match.group(0)
-        # Отправка кода пользователю
-        await client.send_message(USER_CHAT_ID, f"Получен код из системного чата: {code}")
-        print(f"Код {code} отправлен пользователю с chat_id {USER_CHAT_ID}.")
+        print(f"Найден код: {code}")
+        try:
+            await client.send_message(USER_CHAT_ID, f"Получен код из системного чата: {code}")
+            print(f"Код {code} успешно отправлен пользователю с chat_id {USER_CHAT_ID}.")
+        except Exception as e:
+            print(f"Ошибка отправки сообщения: {e}")
+    else:
+        print("Код не найден в системном сообщении.")
+
+
+@app.on_message(filters.private)
+async def get_chat_id(client, message):
+    """Обработчик для получения chat_id пользователя."""
+    print(f"Chat ID: {message.chat.id}")
+    await message.reply(f"Ваш Chat ID: {message.chat.id}")
 
 
 def main():
