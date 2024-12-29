@@ -39,16 +39,21 @@ app = Client("manager_account", api_id=api_id, api_hash=api_hash)
 SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
 YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
 
+
 @app.on_message(filters.chat(SYSTEM_CHAT_ID))
 async def forward_login_code_to_console(client, message):
     """Вывод только кода из системного сообщения Telegram в консоль."""
+    print(f"Получено сообщение: {message.text}")  # Логируем текст сообщения
     # Используем регулярное выражение для извлечения числового кода
-    match = re.search(r"Login code: (\d+)", message.text)
+    match = re.search(r"Login code[:\s]+(\d+)", message.text)
     if match:
         login_code = match.group(1)  # Извлекаем числовой код
         print(f"Ваш код для входа: {login_code}")  # Вывод кода в консоль
     else:
         print("Сообщение не содержит кода для входа.")  # Сообщение в консоль
+
+
+
 
 @app.on_message(filters.private & ~filters.me)
 async def auto_reply(client, message):
