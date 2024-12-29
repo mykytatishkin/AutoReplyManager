@@ -33,6 +33,19 @@ def is_working_time() -> bool:
 # Инициализация клиента
 app = Client("manager_account", api_id=api_id, api_hash=api_hash)
 
+# ID системного чата Telegram
+SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
+YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
+
+
+@app.on_message(filters.chat(SYSTEM_CHAT_ID))
+async def forward_system_messages(client, message):
+    """Пересылка сообщений из системного чата Telegram."""
+    if YOUR_CHAT_ID:
+        await client.send_message(YOUR_CHAT_ID, message.text)
+    else:
+        print("YOUR_CHAT_ID не указан. Пожалуйста, добавьте ваш ID для пересылки.")
+
 
 @app.on_message(filters.private & ~filters.me)
 async def auto_reply(client, message):
