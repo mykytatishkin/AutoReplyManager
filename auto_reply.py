@@ -39,7 +39,10 @@ app = Client("manager_account", api_id=api_id, api_hash=api_hash, no_updates=Tru
 SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
 YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
 
-
+@app.on_message()
+async def log_all_messages(client, message):
+    """Логирует все сообщения, которые получает бот."""
+    print(f"Новое сообщение: {message}")
 
 @app.on_message()
 async def log_all_messages(client, message):
