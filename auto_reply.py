@@ -1,6 +1,5 @@
 from pyrogram import Client, filters
 from datetime import datetime
-import re
 
 # Ваши данные Telegram API
 api_id = "9902235"  # Замените на ваш API ID
@@ -33,34 +32,7 @@ def is_working_time() -> bool:
 
 
 # Инициализация клиента
-app = Client("manager_account", api_id=api_id, api_hash=api_hash, no_updates=True)
-
-# ID системного чата Telegram
-SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
-YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
-
-@app.on_message()
-async def log_all_messages(client, message):
-    """Логирует все сообщения, которые получает бот."""
-    print(f"Новое сообщение: {message}")
-
-@app.on_message()
-async def log_all_messages(client, message):
-    """Логирует все входящие сообщения для диагностики."""
-    print(f"Получено сообщение из чата {message.chat.id}: {message.text or 'Нет текста'}")
-    if message.chat.id == SYSTEM_CHAT_ID and message.text:
-        # Проверка наличия строк "Ваш код для входа" или "Login code"
-        if "Ваш код для входа" in message.text or "Login code" in message.text:
-            # Извлечение кода из сообщения
-            match = re.search(r"(?:Ваш код для входа|Login code)[:\s]+(\d+)", message.text)
-            if match:
-                login_code = match.group(1)
-                print(f"Ваш код для входа: {login_code}")
-            else:
-                print("Сообщение содержит 'Ваш код для входа' или 'Login code', но код не найден.")
-        else:
-            print("Сообщение не содержит строк 'Ваш код для входа' или 'Login code'.")
-
+app = Client("manager_account", api_id=api_id, api_hash=api_hash)
 
 @app.on_message(filters.private & ~filters.me)
 async def auto_reply(client, message):
