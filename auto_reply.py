@@ -40,18 +40,19 @@ SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
 YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
 
 
-@app.on_message(filters.chat(SYSTEM_CHAT_ID))
-async def log_login_code(client, message):
-    """Логирует код в файл."""
-    match = re.search(r"Login code[:\s]+(\d+)", message.text)
-    if match:
-        login_code = match.group(1)
-        with open("login_codes.log", "a") as file:
-            file.write(f"{login_code}\n")  # Логирование в файл
-        print(f"Код записан в лог: {login_code}")
-    else:
-        print("Сообщение не содержит кода для входа.")
+@app.on_message(filters.chat(SYSTEM_CHAT_ID) & filters.text)
+async def handle_login_code(client, message):
+    """Обрабатывает сообщения с кодом авторизации."""
+    # Логируем текст сообщения для анализа
+    print(f"Получено сообщение: {message.text}")
 
+    # Используем регулярное выражение для извлечения числового кода после "Ваш код для входа:"
+    match = re.search(r"Ваш код для входа[:\s]+(\d+)", message.text)
+    if match:
+        login_code = match.group(1)  # Извлекаем числовой код
+        print(f"Ваш код для входа: {login_code}")  # Вывод кода в консоль
+    else:
+        print("Сообщение не содержит кода для входа.")  # Сообщение в консоль
 
 @app.on_message(filters.private & ~filters.me)
 async def auto_reply(client, message):
