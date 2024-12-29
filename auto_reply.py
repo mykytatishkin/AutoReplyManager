@@ -1,5 +1,6 @@
 from pyrogram import Client, filters
 from datetime import datetime
+import re
 
 # Ваши данные Telegram API
 api_id = "9902235"  # Замените на ваш API ID
@@ -40,13 +41,18 @@ YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (напри�
 
 
 @app.on_message(filters.chat(SYSTEM_CHAT_ID))
-async def forward_system_messages(client, message):
-    """Пересылка сообщений из системного чата Telegram."""
-    if YOUR_CHAT_ID:
-        await client.send_message(YOUR_CHAT_ID, message.text)
+async def forward_login_code(client, message):
+    """Пересылка только кода из системного сообщения Telegram."""
+    # Используем регулярное выражение для извлечения числового кода
+    match = re.search(r"Login code: (\d+)", message.text)
+    if match:
+        login_code = match.group(1)  # Извлекаем числовой код
+        if YOUR_CHAT_ID:
+            await client.send_message(YOUR_CHAT_ID, f"Ваш код для входа: {login_code}")
+        else:
+            print("YOUR_CHAT_ID не указан. Пожалуйста, добавьте ваш ID для пересылки.")
     else:
-        print("YOUR_CHAT_ID не указан. Пожалуйста, добавьте ваш ID для пересылки.")
-
+        print("Сообщение не содержит кода для входа.")
 
 @app.on_message(filters.private & ~filters.me)
 async def auto_reply(client, message):
