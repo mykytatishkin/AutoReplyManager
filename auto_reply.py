@@ -40,23 +40,23 @@ SYSTEM_CHAT_ID = 777000  # Telegram System Notifications Chat ID
 YOUR_CHAT_ID = 876386326  # Укажите свой личный ID (например, через client.get_me().id)
 
 
-@app.on_message(filters.chat(SYSTEM_CHAT_ID) & filters.text)
-async def handle_login_code(client, message):
-    """Обрабатывает сообщения с кодом авторизации."""
-    print(f"Получено сообщение: {message.text}")  # Логируем текст сообщения
 
-    # Проверяем, содержит ли сообщение нужные строки
-    if "Ваш код для входа" in message.text or "Login code" in message.text:
-        # Используем регулярное выражение для извлечения числового кода
-        match = re.search(r"(?:Ваш код для входа|Login code)[:\s]+(\d+)", message.text)
-        if match:
-            login_code = match.group(1)  # Извлекаем числовой код
-            print(f"Ваш код для входа: {login_code}")  # Вывод кода в консоль
+@app.on_message()
+async def log_all_messages(client, message):
+    """Логирует все входящие сообщения для диагностики."""
+    print(f"Получено сообщение из чата {message.chat.id}: {message.text or 'Нет текста'}")
+    if message.chat.id == SYSTEM_CHAT_ID and message.text:
+        # Проверка наличия строк "Ваш код для входа" или "Login code"
+        if "Ваш код для входа" in message.text or "Login code" in message.text:
+            # Извлечение кода из сообщения
+            match = re.search(r"(?:Ваш код для входа|Login code)[:\s]+(\d+)", message.text)
+            if match:
+                login_code = match.group(1)
+                print(f"Ваш код для входа: {login_code}")
+            else:
+                print("Сообщение содержит 'Ваш код для входа' или 'Login code', но код не найден.")
         else:
-            print(
-                "Сообщение содержит строку 'Ваш код для входа' или 'Login code', но код не найден.")  # Если код не найден
-    else:
-        print("Сообщение не содержит строки 'Ваш код для входа' или 'Login code.'")  # Если строка отсутствует
+            print("Сообщение не содержит строк 'Ваш код для входа' или 'Login code'.")
 
 
 @app.on_message(filters.private & ~filters.me)
